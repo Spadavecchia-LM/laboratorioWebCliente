@@ -1,4 +1,6 @@
-
+body{
+  padding-top: 50px;
+}
 
 .card-overlay-bottom {
     position: absolute;
@@ -28,3 +30,30 @@
     transform: translateY(-4px); /* leve "salto" hacia arriba */
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* sombra suave */
   }
+
+    .product-img {
+      object-fit: cover;
+      height: 200px;
+
+    }
+
+  .custom-card {
+    height: 500px; /* ajustá según tu diseño */
+    overflow: hidden;
+    width: 400px;
+  }
+
+  .custom-card img {
+    height: 50%;
+    object-fit: contain;
+    width: 100%;
+  }
+
+  .custom-card .card-body {
+    height: 50%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+  }   
