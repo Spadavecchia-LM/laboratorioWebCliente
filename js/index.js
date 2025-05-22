@@ -27,6 +27,7 @@ document.getElementById("btn-add-to-cart").addEventListener("click", () => {
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
 
     // Cierra el modal
     const modalElement = document.getElementById('productModal');
@@ -65,6 +66,12 @@ document.addEventListener("click", (e) => {
   }
 });
 
+function updateCartCount() {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+  document.getElementById("cart-count").textContent = totalItems;
+}
+
 async function renderProducts() {
   const products = await fetchProducts();
 
@@ -92,3 +99,4 @@ async function renderProducts() {
 }
 
 renderProducts();
+updateCartCount();
