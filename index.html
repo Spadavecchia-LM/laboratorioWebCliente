@@ -8,8 +8,27 @@
     <link rel="stylesheet" href="styles/style.css">
   </head>
   <body>
-    
+            <!-- Modal de producto -->
+      <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="productModalLabel">Producto</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+              <img id="modal-image" src="" class="img-fluid mb-3" alt="Producto">
+              <p id="modal-description"></p>
+              <h4 id="modal-price" class="text-success"></h4>
+            </div>
+            <div class="modal-footer">
+              <button id="btn-add-to-cart" class="btn btn-primary">Agregar al carrito</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div id="card_container"></div>
+      
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
     <script type="module" src="js/index.js"></script>
