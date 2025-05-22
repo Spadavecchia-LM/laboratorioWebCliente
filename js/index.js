@@ -6,6 +6,44 @@ const cardsContainer = document.querySelector("#card_container");
 
 let currentProduct = null; // para saber qué producto se está viendo
 
+import Swal from 'https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/+esm';
+
+document.getElementById("btn-add-to-cart").addEventListener("click", () => {
+  if (currentProduct) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    const existingItem = cart.find(item => item.id === currentProduct.id);
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      cart.push({
+        id: currentProduct.id,
+        title: currentProduct.title,
+        price: currentProduct.price,
+        image: currentProduct.image,
+        quantity: 1
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    // Cierra el modal
+    const modalElement = document.getElementById('productModal');
+    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+    modalInstance.hide();
+
+    // SweetAlert2: aviso
+    Swal.fire({
+      title: "¡Agregado!",
+      text: `"${currentProduct.title}" fue agregado al carrito.`,
+      icon: "success",
+      timer: 1800,
+      showConfirmButton: false
+    });
+  }
+});
+
 document.addEventListener("click", (e) => {
   const card = e.target.closest(".card[data-id]");
   if (card) {
