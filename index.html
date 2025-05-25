@@ -92,7 +92,25 @@
   </div>
 </section>
 
-
+    <!-- Sidebar del carrito -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="cartSidebar" aria-labelledby="cartSidebarLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="cartSidebarLabel">Carrito de compras</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column">
+        <div id="cart-items" class="flex-grow-1">
+          <!-- Aca van a estar los productos (desde el js) -->
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between mb-3">
+          <strong>Total:</strong>
+          <strong id="cart-total">$0</strong>
+        </div>
+        <button class="btn btn-outline-primary mb-2" id="checkout-btn">Seguir con la compra</button>
+        <button class="btn btn-outline-danger" id="clear-cart-btn">Vaciar carrito</button>
+      </div>
+    </div>
 
 
 

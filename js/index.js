@@ -39,6 +39,45 @@ async function renderProducts() {
   });
 }
 
+// Renderiza el carrito (sidebar)
+function renderCartSidebar() {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const container = document.getElementById("cart-items");
+  const total = document.getElementById("cart-total");
+
+  if (!container || !total) return;
+
+  container.innerHTML = "";
+
+  let finalTotal = 0;
+
+  cart.forEach(item => {
+    const itemTotal = item.price * item.quantity;
+    finalTotal += itemTotal;
+
+    const row = document.createElement("div");
+    row.classList.add("d-flex", "align-items-center", "mb-3", "gap-2");
+
+    row.innerHTML = `
+      <img src="${item.image}" alt="${item.title}" width="40" height="40" style="object-fit: contain;">
+      <div class="flex-grow-1">
+        <div class="fw-semibold">${item.title}</div>
+        <div class="text-muted small">$${item.price} x ${item.quantity} = $${itemTotal.toFixed(2)}</div>
+        <div class="d-flex align-items-center gap-2 mt-1">
+          <button class="btn btn-sm btn-outline-secondary" data-action="decrease" data-id="${item.id}" ${item.quantity === 1 ? "disabled" : ""}>-</button>
+          <span>${item.quantity}</span>
+          <button class="btn btn-sm btn-outline-secondary" data-action="increase" data-id="${item.id}">+</button>
+          <button class="btn btn-sm btn-outline-danger ms-auto" data-action="remove" data-id="${item.id}">🗑️</button>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(row);
+  });
+
+  total.textContent = `$${finalTotal.toFixed(2)}`;
+}
+
 // Renderiza el carrusel (para index.html)
 async function renderCarrousel() {
   const productos = await fetchProducts();
@@ -99,6 +138,39 @@ document.addEventListener("click", (e) => {
   }
 });
 
+// Sumar y restar productos
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-action]");
+  if (!btn) return;
+
+  const action = btn.dataset.action;
+  const id = parseInt(btn.dataset.id);
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const item = cart.find(p => p.id === id);
+
+  if (!item) return;
+
+  if (action === "increase") item.quantity += 1;
+  if (action === "decrease" && item.quantity > 1) item.quantity -= 1;
+  if (action === "remove") {
+    cart = cart.filter(p => p.id !== id);
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartCount();
+  renderCartSidebar();
+});
+
+// Vaciar carrito
+document.getElementById("clear-cart-btn")?.addEventListener("click", () => {
+  localStorage.removeItem("cart");
+  updateCartCount();
+  renderCartSidebar();
+    const sidebarElement = document.getElementById('cartSidebar');
+  const sidebarInstance = bootstrap.Offcanvas.getInstance(sidebarElement);
+  sidebarInstance.hide();
+});
+
 // Agrega producto al carrito y actualiza contador
 document.getElementById("btn-add-to-cart")?.addEventListener("click", () => {
   if (currentProduct) {
@@ -144,6 +216,15 @@ function updateCartCount() {
   const badge = document.getElementById("cart-count");
   if (badge) badge.textContent = totalItems;
 }
+
+// Captura el click del carrito y muestra el sidebar (tambien el del span con la cantidad)
+["cart-icon", "cart-count"].forEach(id => {
+  document.getElementById(id)?.addEventListener("click", () => {
+    renderCartSidebar();
+    const offcanvas = new bootstrap.Offcanvas(document.getElementById("cartSidebar"));
+    offcanvas.show();
+  });
+});
 
 // Ejecutar todo cuando carga la página
 document.addEventListener("DOMContentLoaded", () => {
