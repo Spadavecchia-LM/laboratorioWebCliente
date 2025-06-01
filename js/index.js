@@ -7,6 +7,7 @@ let currentProduct = null;
 // Detecta contenedores según la página
 const cardsContainer = document.querySelector("#card_container") || document.querySelector("#productContainer");
 const carrouselContainer = document.querySelector('#carousel-inner');
+const checkoutBtn = document.querySelector("#checkout-btn")
 
 // Renderiza productos en cards (para products.html o index si aplica)
 async function renderProducts() {
@@ -28,7 +29,7 @@ async function renderProducts() {
       <img src="${product.image}" class="card-img-top" alt="${product.title}">
       <div class="card-body">
         <h5 class="card-title">${product.title}</h5>
-        <p class="card-text text-primary fw-bold">$${product.price}</p>
+        <p class="card-text text-primary fw-bold text-success">$${product.price}</p>
       </div>
       <div class="w-100">
         <button class="btn btn-outline-primary w-100">Más información</button>
@@ -103,7 +104,7 @@ async function renderCarrousel() {
           <img src="${producto.image}" class="card-img-top product-img" alt="${producto.title}">
           <div class="card-body">
             <h5 class="card-title">${producto.title}</h5>
-            <p class="card-text">$${producto.price}</p>
+            <p class="card-text fw-bold text-success ">$${producto.price}</p>
           </div>
           <div class="w-100">
         <button class="btn btn-outline-primary w-100 btn-sm">Más información</button>
@@ -243,6 +244,10 @@ function updateCartCount() {
     const offcanvas = new bootstrap.Offcanvas(document.getElementById("cartSidebar"));
     offcanvas.show();
   });
+});
+
+checkoutBtn.addEventListener("click", () => {
+  window.location.href = "../pages/checkout.html";
 });
 
 // Ejecutar todo cuando carga la página
