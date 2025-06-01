@@ -30,8 +30,8 @@ async function renderProducts() {
         <h5 class="card-title">${product.title}</h5>
         <p class="card-text text-primary fw-bold">$${product.price}</p>
       </div>
-      <div class="card-overlay-bottom">
-        <span>Más información</span>
+      <div class="w-100">
+        <button class="btn btn-outline-primary w-100">Más información</button>
       </div>
     `;
 
@@ -105,6 +105,9 @@ async function renderCarrousel() {
             <h5 class="card-title">${producto.title}</h5>
             <p class="card-text">$${producto.price}</p>
           </div>
+          <div class="w-100">
+        <button class="btn btn-outline-primary w-100 btn-sm">Más información</button>
+      </div>
         </div>
       `;
 
@@ -169,6 +172,16 @@ document.getElementById("clear-cart-btn")?.addEventListener("click", () => {
     const sidebarElement = document.getElementById('cartSidebar');
   const sidebarInstance = bootstrap.Offcanvas.getInstance(sidebarElement);
   sidebarInstance.hide();
+
+    Swal.fire({
+  
+    position: 'bottom-center',
+    icon: 'success',
+    title: 'El carrito fue vaciado con éxito.',
+    showConfirmButton: false,
+    timer: 1800,
+    timerProgressBar: true
+  });
 });
 
 // Agrega producto al carrito y actualiza contador
@@ -199,13 +212,19 @@ document.getElementById("btn-add-to-cart")?.addEventListener("click", () => {
     modalInstance.hide();
 
     // SweetAlert2
-    Swal.fire({
-      title: "¡Agregado!",
-      text: `"${currentProduct.title}" fue agregado al carrito.`,
-      icon: "success",
-      timer: 1800,
-      showConfirmButton: false
-    });
+   Swal.fire({
+  toast: true,
+  position: 'bottom-end',
+  icon: 'success',
+  title: `"${currentProduct.title}" fue agregado al carrito.`,
+  showConfirmButton: false,
+  timer: 1800,
+  timerProgressBar: true,
+  customClass: {
+    popup: 'colored-toast'
+  }
+});
+
   }
 });
 

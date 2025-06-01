@@ -2,37 +2,8 @@ body{
   padding-top: 50px;
 }
 
-.card-overlay-bottom {
-    position: absolute;
-    bottom: -100%;
-    left: 0;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    color: #fff;
-    text-align: center;
-    padding: 8px 0;
-    font-weight: 500;
-    transition: bottom 0.4s ease-in;
-    border-bottom-left-radius: 0.375rem;
-    border-bottom-right-radius: 0.375rem;
-  }
-  
-  .card-hover:hover .card-overlay-bottom {
-    bottom: 0;
-  }
-  
-  .card-hover {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-  }
-  
-  .card-hover:hover {
-    transform: translateY(-4px); /* leve "salto" hacia arriba */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* sombra suave */
-  }
-
     .product-img {
-      object-fit: cover;
+      object-fit: contain;
       height: 200px;
 
     }
