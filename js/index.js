@@ -238,13 +238,11 @@ function updateCartCount() {
 }
 
 // Captura el click del carrito y muestra el sidebar (tambien el del span con la cantidad)
-["cart-icon", "cart-count"].forEach(id => {
-  document.getElementById(id)?.addEventListener("click", () => {
+  document.getElementById("cart-button")?.addEventListener("click", () => {
     renderCartSidebar();
     const offcanvas = new bootstrap.Offcanvas(document.getElementById("cartSidebar"));
     offcanvas.show();
   });
-});
 
 checkoutBtn.addEventListener("click", () => {
   window.location.href = "../pages/checkout.html";
