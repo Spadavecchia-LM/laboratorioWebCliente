@@ -1,4 +1,5 @@
 // en este archivo va la funcionalidad del carrito de compras
+import Swal from 'https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/+esm';
 
 function renderCheckout() {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -61,9 +62,45 @@ document.addEventListener("click", (e) => {
 // Confirmar formulario de compra
 document.getElementById("checkout-form")?.addEventListener("submit", (e) => {
   e.preventDefault();
+
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  if (cart.length === 0) {
+    Swal.fire("Tu carrito está vacío", "Agregá productos antes de confirmar la compra.", "warning");
+    return;
+  }
+
+  const nombre = document.getElementById("nombre").value;
+  const dni = document.getElementById("dni").value;
+  const email = document.getElementById("email").value;
+  const direccion = document.getElementById("direccion").value;
+
+  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+  const resumenProductos = cart.map(p => `• ${p.title} x${p.quantity} - $${(p.price * p.quantity).toFixed(2)}`).join('<br>');
+
+  Swal.fire({
+    title: "¡Compra confirmada!",
+    html: `
+      <strong>Nombre:</strong> ${nombre}<br>
+      <strong>DNI:</strong> ${dni}<br>
+      <strong>Email:</strong> ${email}<br>
+      <strong>Dirección:</strong> ${direccion}<br><br>
+      <strong>Productos:</strong><br>${resumenProductos}<br><br>
+      <strong>Total:</strong> $${total.toFixed(2)}
+    `,
+    icon: "success",
+    confirmButtonText: "Cerrar"
+  }).then(() => {
   localStorage.removeItem("cart");
-  alert("¡Compra confirmada! Gracias por su pedido.");
   renderCheckout();
+  document.getElementById("checkout-form").reset();
+  window.location.href = "../index.html";
+});
+
+    localStorage.removeItem("cart");
+    renderCheckout();
+    document.getElementById("checkout-form").reset();
+
 });
 
 // Al cargar la página
