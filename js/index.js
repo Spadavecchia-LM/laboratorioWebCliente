@@ -234,7 +234,11 @@ function updateCartCount() {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
   const badge = document.getElementById("cart-count");
-  if (badge) badge.textContent = totalItems;
+
+  if (badge) {
+    badge.textContent = totalItems;
+    badge.style.display = totalItems > 0 ? "inline-block" : "none";
+  }
 }
 
 // Captura el click del carrito y muestra el sidebar (tambien el del span con la cantidad)
@@ -244,7 +248,7 @@ function updateCartCount() {
     offcanvas.show();
   });
 
-checkoutBtn.addEventListener("click", () => {
+checkoutBtn?.addEventListener("click", () => {
   window.location.href = "../pages/checkout.html";
 });
 

@@ -1,5 +1,15 @@
-// en este archivo va la funcionalidad del carrito de compras
+
 import Swal from 'https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/+esm';
+
+function updateCartCount() {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const cartCountElement = document.getElementById("cart-count");
+  if (cartCountElement) {
+    const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCountElement.textContent = totalQuantity;
+    cartCountElement.style.display = totalQuantity > 0 ? "inline-block" : "none";
+  }
+}
 
 function renderCheckout() {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -10,6 +20,13 @@ function renderCheckout() {
 
   list.innerHTML = "";
   let finalTotal = 0;
+
+  if (cart.length === 0) {
+    list.innerHTML = "<li class='text-muted'>Tu carrito está vacío.</li>";
+    total.textContent = "0.00";
+    updateCartCount();
+    return;
+  }
 
   cart.forEach(item => {
     const itemTotal = item.price * item.quantity;
@@ -27,81 +44,26 @@ function renderCheckout() {
         </div>
       </div>
       <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-sm btn-outline-secondary" data-action="decrease" data-id="${item.id}" ${item.quantity === 1 ? "disabled" : ""}>-</button>
         <span>${item.quantity}</span>
-        <button class="btn btn-sm btn-outline-secondary" data-action="increase" data-id="${item.id}">+</button>
-        <button class="btn btn-sm btn-outline-danger" data-action="remove" data-id="${item.id}">🗑️</button>
       </div>
     `;
 
+    const removeBtn = document.createElement("button");
+    removeBtn.className = "btn btn-sm btn-outline-danger";
+    removeBtn.innerText = "🗑️";
+    removeBtn.onclick = () => {
+      const updatedCart = cart.filter(p => p.id !== item.id);
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      renderCheckout();
+    };
+
+    li.querySelector("div.d-flex.align-items-center.gap-2").appendChild(removeBtn);
     list.appendChild(li);
   });
 
   total.textContent = finalTotal.toFixed(2);
+  updateCartCount();
 }
 
-// Acciones: +, –, eliminar
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest("button[data-action]");
-  if (!btn) return;
-
-  const action = btn.dataset.action;
-  const id = parseInt(btn.dataset.id);
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  const item = cart.find(p => p.id === id);
-  if (!item) return;
-
-  if (action === "increase") item.quantity += 1;
-  if (action === "decrease" && item.quantity > 1) item.quantity -= 1;
-  if (action === "remove") cart = cart.filter(p => p.id !== id);
-
-  localStorage.setItem("cart", JSON.stringify(cart));
-  renderCheckout();
-});
-
-// Confirmar formulario de compra
-document.getElementById("checkout-form")?.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  if (cart.length === 0) {
-    Swal.fire("Tu carrito está vacío", "Agregá productos antes de confirmar la compra.", "warning");
-    return;
-  }
-
-  const nombre = document.getElementById("nombre").value;
-  const dni = document.getElementById("dni").value;
-  const email = document.getElementById("email").value;
-  const direccion = document.getElementById("direccion").value;
-
-  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-
-  const resumenProductos = cart.map(p => `• ${p.title} x${p.quantity} - $${(p.price * p.quantity).toFixed(2)}`).join('<br>');
-
-  Swal.fire({
-    title: "¡Compra confirmada!",
-    html: `
-      <strong>Nombre:</strong> ${nombre}<br>
-      <strong>DNI:</strong> ${dni}<br>
-      <strong>Email:</strong> ${email}<br>
-      <strong>Dirección:</strong> ${direccion}<br><br>
-      <strong>Productos:</strong><br>${resumenProductos}<br><br>
-      <strong>Total:</strong> $${total.toFixed(2)}
-    `,
-    icon: "success",
-    confirmButtonText: "Cerrar"
-  }).then(() => {
-  localStorage.removeItem("cart");
-  renderCheckout();
-  document.getElementById("checkout-form").reset();
-  window.location.href = "../index.html";
-});
-
-    localStorage.removeItem("cart");
-    renderCheckout();
-    document.getElementById("checkout-form").reset();
-
-});
-
-// Al cargar la página
+// Ejecutar al cargar la página
 document.addEventListener("DOMContentLoaded", renderCheckout);
