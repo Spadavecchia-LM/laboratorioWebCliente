@@ -7,11 +7,12 @@ let allProducts = [];
 
 // Detecta contenedores según la página
 const cardsContainer = document.querySelector("#card_container") || document.querySelector("#productContainer");
-const carrouselContainer = document.querySelector('#carousel-inner');
 const checkoutBtn = document.querySelector("#checkout-btn")
 
 // Renderiza productos en cards (para products.html o index si aplica)
 async function renderProducts(products = null) {
+  const carrouselContainer = document.querySelector('#carousel-inner');
+
   if (!products) {
     allProducts = await fetchProducts();
     products = allProducts;
@@ -72,12 +73,14 @@ if (clearBtn) {
 renderProducts();
 
 // También ejecutar búsqueda al presionar Enter en el input
-searchInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault(); // Evita que el formulario se envíe si estuviera dentro de uno
-    searchBtn.click();  // Simula el click en el botón
-  }
-});
+if (searchInput) {
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      searchBtn.click();
+    }
+  });
+}
 
 // Renderiza el carrito (sidebar)
 function renderCartSidebar() {
@@ -120,7 +123,11 @@ function renderCartSidebar() {
 
 // Renderiza el carrusel (para index.html)
 async function renderCarrousel() {
+
   const productos = await fetchProducts();
+
+  const carrouselContainer = document.querySelector('#carousel-inner');
+
   if (!carrouselContainer) return;
 
   carrouselContainer.innerHTML = '';
@@ -143,11 +150,11 @@ async function renderCarrousel() {
           <img src="${producto.image}" class="card-img-top product-img" alt="${producto.title}">
           <div class="card-body">
             <h5 class="card-title">${producto.title}</h5>
-            <p class="card-text fw-bold text-success ">$${producto.price}</p>
+            <p class="card-text fw-bold text-success">$${producto.price}</p>
           </div>
           <div class="w-100">
-        <button class="btn btn-outline-primary w-100 btn-sm">Más información</button>
-      </div>
+            <button class="btn btn-outline-primary w-100 btn-sm">Más información</button>
+          </div>
         </div>
       `;
 

@@ -1,4 +1,3 @@
-
 import Swal from 'https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/+esm';
 
 function updateCartCount() {
@@ -65,5 +64,47 @@ function renderCheckout() {
   updateCartCount();
 }
 
-// Ejecutar al cargar la página
-document.addEventListener("DOMContentLoaded", renderCheckout);
+//  MOSTRAR ALERTA CON RESUMEN EN EL SUBMIT
+document.addEventListener("DOMContentLoaded", () => {
+  renderCheckout();
+
+  const form = document.getElementById("checkout-form");
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      if (cart.length === 0) {
+        Swal.fire("Tu carrito está vacío", "Agregá productos antes de confirmar la compra.", "warning");
+        return;
+      }
+
+      const nombre = document.getElementById("nombre")?.value || "";
+      const dni = document.getElementById("dni")?.value || "";
+      const email = document.getElementById("email")?.value || "";
+      const direccion = document.getElementById("direccion")?.value || "";
+
+      const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+      const resumenProductos = cart.map(p => `➤ ${p.title} x${p.quantity} - $${(p.price * p.quantity).toFixed(2)}`).join('<br>');
+
+      Swal.fire({
+        title: "¡Compra confirmada!",
+        html: `
+          <strong>Nombre:</strong> ${nombre}<br>
+          <strong>DNI:</strong> ${dni}<br>
+          <strong>Email:</strong> ${email}<br>
+          <strong>Dirección:</strong> ${direccion}<br><br>
+          <strong>Productos:</strong><br>${resumenProductos}<br><br>
+          <strong>Total:</strong> $${total.toFixed(2)}
+        `,
+        icon: "success",
+        confirmButtonText: "Cerrar"
+      }).then(() => {
+        localStorage.removeItem("cart");
+        form.reset();
+        renderCheckout();
+        window.location.href = "../index.html";
+      });
+    });
+  }
+});
