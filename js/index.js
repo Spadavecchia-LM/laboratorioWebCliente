@@ -3,6 +3,7 @@ import { fetchProducts } from './data.js';
 import Swal from 'https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/+esm';
 
 let currentProduct = null;
+let allProducts = [];
 
 // Detecta contenedores según la página
 const cardsContainer = document.querySelector("#card_container") || document.querySelector("#productContainer");
@@ -10,10 +11,13 @@ const carrouselContainer = document.querySelector('#carousel-inner');
 const checkoutBtn = document.querySelector("#checkout-btn")
 
 // Renderiza productos en cards (para products.html o index si aplica)
-async function renderProducts() {
-  const products = await fetchProducts();
-  if (!cardsContainer) return;
+async function renderProducts(products = null) {
+  if (!products) {
+    allProducts = await fetchProducts();
+    products = allProducts;
+  }
 
+  if (!cardsContainer) return;
   cardsContainer.innerHTML = "";
 
   products.forEach(product => {
@@ -39,6 +43,41 @@ async function renderProducts() {
     cardsContainer.appendChild(card);
   });
 }
+
+// Búsqueda al hacer clic en el botón
+const searchBtn = document.getElementById("btn-search");
+const searchInput = document.getElementById("search-input");
+
+if (searchBtn && searchInput) {
+  searchBtn.addEventListener("click", () => {
+    const query = searchInput.value.toLowerCase();
+    const filtered = allProducts.filter(p =>
+      p.title.toLowerCase().includes(query)
+    );
+    renderProducts(filtered);
+  });
+}
+
+
+const clearBtn = document.getElementById("btn-clear");
+
+if (clearBtn) {
+  clearBtn.addEventListener("click", () => {
+    searchInput.value = "";
+    renderProducts(); // vuelve a mostrar todo
+  });
+}
+
+// Llamada inicial para cargar todos los productos
+renderProducts();
+
+// También ejecutar búsqueda al presionar Enter en el input
+searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault(); // Evita que el formulario se envíe si estuviera dentro de uno
+    searchBtn.click();  // Simula el click en el botón
+  }
+});
 
 // Renderiza el carrito (sidebar)
 function renderCartSidebar() {
