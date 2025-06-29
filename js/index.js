@@ -11,7 +11,7 @@ const checkoutBtn = document.querySelector("#checkout-btn")
 
 // Renderiza productos en cards (para products.html o index si aplica)
 async function renderProducts(products = null) {
-  const carrouselContainer = document.querySelector('#carousel-inner');
+
 
   if (!products) {
     allProducts = await fetchProducts();
